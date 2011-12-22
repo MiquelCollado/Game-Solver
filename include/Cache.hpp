@@ -1,0 +1,4 @@
+class Cache {
+	public:
+};
+
