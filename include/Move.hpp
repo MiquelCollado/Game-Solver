@@ -1,5 +1,5 @@
-#ifndef H_NODE
-#define H_NODE
+#ifndef H_MOVE
+#define H_MOVE
 
 #include "NodeEval.hpp"
 
@@ -9,5 +9,5 @@ class Move {
 		int player;
 };
 
-#endif /* H_NODE */
+#endif /* H_MOVE */
 

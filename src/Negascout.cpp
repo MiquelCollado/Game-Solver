@@ -5,10 +5,11 @@
 #include "NodeEval.hpp"
 
 int main(){
-	Negascout ns;
 	Config cfg;
 	Move move;
 	NodeEval nodeeval;
 	Node node;
+	Cache cache;
+	Negascout ns(node, move, cfg, cache);
 }
 
