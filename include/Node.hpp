@@ -6,7 +6,7 @@ class Node {
 		int turn;
 //		int h;
 
-		virtual string generateKey();
+		virtual string generateKey()=0;
 
 		Node(){
 			turn = 1;
