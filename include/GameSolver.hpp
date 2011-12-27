@@ -52,9 +52,11 @@ function negascout(node, depth, α, β)
 			if(node.isEndGame()){ //Finish or no moves
 				node_eval.h = node.heuristic();
 				node_eval.distanceEnd = 0;
+node.print(depth, node_eval);
 			} else if(depth == 0){
 				node_eval.h = node.heuristic();
 				node_eval.distanceEnd = -1;
+node.print(depth, node_eval);
 			} else {
 				vector<Move> moves = node.findMoves();
 				int b = beta;
@@ -63,12 +65,14 @@ function negascout(node, depth, α, β)
 					node2.doMove(moves[i]);
 					NodeEval node_eval_tmp = negascout(node2, depth-1, -b, -alpha);
 					node_eval_tmp.h = -node_eval_tmp.h;
+node2.print(depth-1, node_eval_tmp);
 					if(alpha < node_eval_tmp.h && node_eval_tmp.h < beta && i!=0){
 						node_eval_tmp = negascout(node2, depth-1, -beta, -alpha);
 						node_eval_tmp.h = -node_eval_tmp.h;
+node2.print(depth-1, node_eval_tmp);
 					}
 //					alpha = max(alpha, moves[i].h);
-					if(alpha < node_eval_tmp.h){
+					if(alpha <= node_eval_tmp.h){
 						alpha = node_eval_tmp.h;
 						node_eval.h = node_eval_tmp.h;
 						node_eval.depth = node_eval_tmp.depth;
@@ -91,6 +95,7 @@ function negascout(node, depth, α, β)
 		}
 		Move findBestMove(Node & node, int depth){
 			int best_h;
+			int best_distance;
 			int num = -1;
 			int alpha = LONG_MIN;
 			int beta = LONG_MAX;
@@ -101,16 +106,26 @@ function negascout(node, depth, α, β)
 				node2.doMove(moves[i]);
 				NodeEval node_eval_tmp = negascout(node2, depth, alpha, beta);
 //				node_eval_tmp.h = -node_eval_tmp.h;
-node2.print(node_eval_tmp);
+node2.print(depth, node_eval_tmp);
 //cout << "Move: " << moves[i].x << ", "  << moves[i].y << ", "  << moves[i].h << ", " << moves[i].player << endl;
-				if(i==0 || node_eval_tmp.h > best_h){
+				if(i==0){
 					best_h = node_eval_tmp.h;
+					best_distance = node_eval_tmp.distanceEnd;
+					num = i;
+				} else if(node_eval_tmp.h > best_h){
+					best_h = node_eval_tmp.h;
+					best_distance = node_eval_tmp.distanceEnd;
+					num = i;
+				} else if(node_eval_tmp.h == best_h && node_eval_tmp.distanceEnd < best_distance){ 
+					best_h = node_eval_tmp.h;
+					best_distance = node_eval_tmp.distanceEnd;
 					num = i;
 				}
 			}
 			cout << "num: " <<  num << endl;
 			cout << "node.turn: " <<  node.turn << endl;
 			cout << "best_h: " <<  best_h << endl;
+			cout << "best_distance: " <<  best_distance << endl;
 			return moves[num];
 
 		}

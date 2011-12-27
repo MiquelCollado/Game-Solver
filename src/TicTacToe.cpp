@@ -117,11 +117,25 @@ class TicTacToe_Node: public Node {
 			board[move.x][move.y] = move.player;
 			nextPlayer();
 		}
-		void print(NodeEval data){
+		void print(int depth, NodeEval data){
+			string pre(12 - depth,  ' ');
+			cout << pre << "turn: " << turn << endl;
+			cout << pre << "heuristic: " << data.h << endl;
+			cout << pre << "distanceEnd: " << data.distanceEnd << endl;
+			cout << pre << "depth: " << depth << endl;
+			for(int j = 0 ; j < BOARD_SIZE_Y ; j++){
+				cout << pre;
+				for(int i = 0 ; i < BOARD_SIZE_X ; i++){
+					cout << board[i][j];
+				}
+				cout << endl;
+			}
+			cout << endl;
+		}
+		void print(){
 			cout << "turn: " << turn << endl;
-			cout << "heuristic: " << data.h << endl;
-			for(int i = 0 ; i < BOARD_SIZE_X ; i++){
-				for(int j = 0 ; j < BOARD_SIZE_Y ; j++){
+			for(int j = 0 ; j < BOARD_SIZE_Y ; j++){
+				for(int i = 0 ; i < BOARD_SIZE_X ; i++){
 					cout << board[i][j];
 				}
 				cout << endl;
@@ -134,9 +148,13 @@ int main(){
 	Config cfg;
 	GameSolver<TicTacToe_Node, TicTacToe_Move, LevelDBPersistence> gs(cfg);
 	TicTacToe_Node board;
-	board.board[0][0] = 1;
-	board.board[0][1] = 1;
-	board.turn = 2;
-	TicTacToe_Move mv = gs.findBestMove(board, 5);
+	board.board[0][0] = 1; board.board[1][0] = 1; board.board[2][0] = 0;
+	board.board[0][1] = 0; board.board[1][1] = 2; board.board[2][1] = 0;
+	board.board[0][2] = 0; board.board[1][2] = 0; board.board[2][2] = 0;
+	board.turn = 1;
+	TicTacToe_Move mv = gs.findBestMove(board, 10);
+	board.doMove(mv);
+	board.print();
+	
 }
 
