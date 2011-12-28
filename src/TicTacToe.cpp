@@ -5,14 +5,12 @@
 #include "NodeEval.hpp"
 #include "Persistence.hpp"
 
+#include "LevelDBPersistence.hpp"
+
 #define BOARD_SIZE_X 3
 #define BOARD_SIZE_Y 3
 
 using namespace std;
-
-class LevelDBPersistence: public Persistence {
-	public:
-};
 
 class TicTacToe_Move: public Move {
 	public:

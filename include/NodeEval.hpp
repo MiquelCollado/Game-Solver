@@ -11,25 +11,25 @@ class NodeEval {
 		int depth;
 		int h;
 		int distanceEnd;
-		string str;
 
 		NodeEval(){
 			depth = 0;
 			h = 0;
 			distanceEnd = 0;
-			str = "";
 		}
-		void parseStr(){
+		void parseString(string str){
 			stringstream ss(stringstream::in | stringstream::out);//create a stringstream
 			ss << str;
 			ss >> depth;
 			ss >> h;
 			ss >> distanceEnd;
 		}
-		void makeStr(){
+		string makeString(){
+			string str;
 			stringstream ss(stringstream::in | stringstream::out);//create a stringstream
 			ss << depth << "," << h << "," << distanceEnd;
 			ss >> str;
+			return str;
 		}
 };
 

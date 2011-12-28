@@ -27,7 +27,7 @@ using namespace std;
 template <class Node, class Move, class Persistence>
 class GameSolver {
 		Config config;
-
+		Persistence persistence;
 /*
 function negascout(node, depth, α, β)
     if node is a terminal node or depth = 0
@@ -45,6 +45,13 @@ function negascout(node, depth, α, β)
 */
 		NodeEval negascout(Node & node, int depth, int alpha, int beta){
 			NodeEval node_eval;
+			
+			if(config.PersistenceUse){
+				node_eval.parseString(persistence.get(node.generateKey()));
+				if(node_eval.depth >= depth)
+					return node_eval;
+			}
+			
 			node_eval.depth = depth;
 			node_eval.distanceEnd = -1;
 			node_eval.h = alpha;

@@ -7,11 +7,19 @@ using namespace std;
 
 class Config {
 	public:
-		bool	DbUse;
-		int	DbMinDepthToSave;
-		string	DbFilename;
+		bool	PersistenceUse;
+		int	PersistenceMinDepthToSave;
+		string	PersistenceName;
 		bool	TimeoutUse;
 		int	TimeoutSeconds;
+
+		Config(){
+			PersistenceUse = false;
+			PersistenceMinDepthToSave = 0;
+			PersistenceName = "";
+			TimeoutUse = false;
+			TimeoutSeconds = 0;
+		}
 };
 
 #endif /* H_CONFIG */
