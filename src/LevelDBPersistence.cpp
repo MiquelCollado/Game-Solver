@@ -20,6 +20,10 @@ int LevelDBPersistence::open(string name){
 string LevelDBPersistence::get(string key){
 	string data;
 	leveldb::Status s = db->Get(leveldb::ReadOptions(), key, &data);
+        cout << "LOAD: " << endl;
+        cout << "LOAD key: " << key << endl;
+        cout << "LOAD str: " << data << endl;
+
 	return data;
 }
 

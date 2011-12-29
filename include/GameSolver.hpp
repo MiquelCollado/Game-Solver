@@ -48,8 +48,10 @@ function negascout(node, depth, α, β)
 			
 			if(config.PersistenceUse){
 				node_eval.parseString(persistence.get(node.generateKey()));
-				if(node_eval.depth >= depth)
+				if(node_eval.depth >= depth){
+					node.print(depth, node_eval);
 					return node_eval;
+				}
 			}
 			
 			node_eval.depth = depth;
@@ -88,17 +90,30 @@ node2.print(depth-1, node_eval_tmp);
 							node_eval.distanceEnd++;
 					}
 					if (alpha >= beta) // Beta cut-off
-						return node_eval;
+						break;
+						//return node_eval;
 					b = alpha + 1;
 				}
 			}
+                        if(config.PersistenceUse){
+				if(depth >= config.PersistenceMinDepthToSave){
+					persistence.set(node.generateKey(), node_eval.makeString());
+				}
+                        }
+
 			return node_eval;
 		}
 	public:
 		GameSolver(Config cfg){
 			config = cfg;
+			if(config.PersistenceUse){
+				persistence.open(config.PersistenceName);
+			}
 		}
 		~GameSolver(){
+			if(config.PersistenceUse){
+				persistence.close();
+			}
 		}
 		Move findBestMove(Node & node, int depth){
 			int best_h;

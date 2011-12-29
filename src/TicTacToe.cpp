@@ -30,7 +30,42 @@ class TicTacToe_Node: public Node {
 			}
 		}
 		string generateKey(){
-			return "";
+			vector<string> keys;
+			stringstream ss1, ss2, ss3, ss4, ss5, ss6, ss7, ss8;//create a stringstream
+
+			ss1 << turn;//add number to the stream
+			ss2 << turn;//add number to the stream
+			ss3 << turn;//add number to the stream
+			ss4 << turn;//add number to the stream
+			ss5 << turn;//add number to the stream
+			ss6 << turn;//add number to the stream
+			ss7 << turn;//add number to the stream
+			ss8 << turn;//add number to the stream
+			for(int i = 0 ; i < BOARD_SIZE_X ; i++){
+				for(int j = 0 ; j < BOARD_SIZE_Y ; j++){
+					ss1 << board[i]						[j];					//Normal
+					ss2 << board[BOARD_SIZE_X - i - 1]	[j];					//Flip X
+					ss3 << board[i]						[BOARD_SIZE_Y - j - 1];	//Flip Y
+					ss4 << board[BOARD_SIZE_X - i - 1]	[BOARD_SIZE_Y - j - 1]; //Flip XY
+					ss5 << board[j]						[i];					//Mirror
+					ss6 << board[BOARD_SIZE_Y - j - 1]	[i];					//Mirror Flip X
+					ss7 << board[j]						[BOARD_SIZE_X - i - 1];	//Mirror Flip Y
+					ss8 << board[BOARD_SIZE_Y - j - 1]	[BOARD_SIZE_X - i - 1]; //Mirror Flip XY
+				}
+			}
+			keys.push_back(ss1.str());
+			keys.push_back(ss2.str());
+			keys.push_back(ss3.str());
+			keys.push_back(ss4.str());
+			keys.push_back(ss5.str());
+			keys.push_back(ss6.str());
+			keys.push_back(ss7.str());
+			keys.push_back(ss8.str());
+			// using function as comp
+//			sort (keys.begin(), keys.end());
+//			sort (keys.begin(), keys.end(), myfunction);
+
+			return keys[0];//return a string with the contents of the stream
 		}
 		TicTacToe_Node dup(){
 			TicTacToe_Node d;
@@ -144,6 +179,12 @@ class TicTacToe_Node: public Node {
 
 int main(){
 	Config cfg;
+	cfg.PersistenceUse = true;
+	cfg.PersistenceMinDepthToSave = 10;
+	cfg.PersistenceName = "DB_TicTacToe";
+	cfg.TimeoutUse = false;
+	cfg.TimeoutSeconds = 0;
+
 	GameSolver<TicTacToe_Node, TicTacToe_Move, LevelDBPersistence> gs(cfg);
 	TicTacToe_Node board;
 	board.board[0][0] = 1; board.board[1][0] = 1; board.board[2][0] = 0;

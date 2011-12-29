@@ -15,19 +15,24 @@ class NodeEval {
 		NodeEval(){
 			depth = 0;
 			h = 0;
-			distanceEnd = 0;
+			distanceEnd = -1;
 		}
 		void parseString(string str){
-			stringstream ss(stringstream::in | stringstream::out);//create a stringstream
-			ss << str;
-			ss >> depth;
-			ss >> h;
-			ss >> distanceEnd;
+			if(str.compare("")!=0){
+				char c;
+				stringstream ss(stringstream::in | stringstream::out);//create a stringstream
+				ss << str;
+				ss >> depth;
+				ss >> c;
+				ss >> h;
+				ss >> c;
+				ss >> distanceEnd;
+			}
 		}
 		string makeString(){
 			string str;
 			stringstream ss(stringstream::in | stringstream::out);//create a stringstream
-			ss << depth << "," << h << "," << distanceEnd;
+			ss << depth << ";" << h << ";" << distanceEnd;
 			ss >> str;
 			return str;
 		}
