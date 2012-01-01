@@ -155,7 +155,7 @@ class TicTacToe_Node: public Node {
 			cout << pre << "turn: " << turn << endl;
 			cout << pre << "heuristic: " << data.h << endl;
 			cout << pre << "distanceEnd: " << data.distanceEnd << endl;
-			cout << pre << "depth: " << depth << endl;
+			cout << pre << "depth: " << data.depth << endl;
 			for(int j = 0 ; j < BOARD_SIZE_Y ; j++){
 				cout << pre;
 				for(int i = 0 ; i < BOARD_SIZE_X ; i++){
@@ -180,7 +180,7 @@ class TicTacToe_Node: public Node {
 int main(){
 	Config cfg;
 	cfg.PersistenceUse = true;
-	cfg.PersistenceMinDepthToSave = 10;
+	cfg.PersistenceMinDepthToSave = 9;
 	cfg.PersistenceName = "DB_TicTacToe";
 	cfg.TimeoutUse = false;
 	cfg.TimeoutSeconds = 0;

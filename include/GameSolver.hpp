@@ -45,6 +45,7 @@ function negascout(node, depth, α, β)
 */
 		NodeEval negascout(Node & node, int depth, int alpha, int beta){
 			NodeEval node_eval;
+			bool toSave = false;
 			
 			if(config.PersistenceUse){
 				node_eval.parseString(persistence.get(node.generateKey()));
@@ -62,10 +63,12 @@ function negascout(node, depth, α, β)
 				node_eval.h = node.heuristic();
 				node_eval.distanceEnd = 0;
 node.print(depth, node_eval);
+				toSave = true;
 			} else if(depth == 0){
 				node_eval.h = node.heuristic();
 				node_eval.distanceEnd = -1;
 node.print(depth, node_eval);
+				toSave = true;
 			} else {
 				vector<Move> moves = node.findMoves();
 				int b = beta;
@@ -74,20 +77,20 @@ node.print(depth, node_eval);
 					node2.doMove(moves[i]);
 					NodeEval node_eval_tmp = negascout(node2, depth-1, -b, -alpha);
 					node_eval_tmp.h = -node_eval_tmp.h;
-node2.print(depth-1, node_eval_tmp);
+
 					if(alpha < node_eval_tmp.h && node_eval_tmp.h < beta && i!=0){
 						node_eval_tmp = negascout(node2, depth-1, -beta, -alpha);
 						node_eval_tmp.h = -node_eval_tmp.h;
-node2.print(depth-1, node_eval_tmp);
 					}
 //					alpha = max(alpha, moves[i].h);
 					if(alpha <= node_eval_tmp.h){
 						alpha = node_eval_tmp.h;
 						node_eval.h = node_eval_tmp.h;
-						node_eval.depth = node_eval_tmp.depth;
+//						node_eval.depth = node_eval_tmp.depth + 1;
 						node_eval.distanceEnd = node_eval_tmp.distanceEnd;
 						if(node_eval.distanceEnd != -1)
 							node_eval.distanceEnd++;
+						toSave = true;
 					}
 					if (alpha >= beta) // Beta cut-off
 						break;
@@ -95,11 +98,12 @@ node2.print(depth-1, node_eval_tmp);
 					b = alpha + 1;
 				}
 			}
-                        if(config.PersistenceUse){
+node.print(depth, node_eval);
+			if(config.PersistenceUse && toSave){
 				if(depth >= config.PersistenceMinDepthToSave){
 					persistence.set(node.generateKey(), node_eval.makeString());
 				}
-                        }
+			}
 
 			return node_eval;
 		}
