@@ -28,6 +28,72 @@ template <class Node, class Move, class Persistence>
 class GameSolver {
 		Config config;
 		Persistence persistence;
+
+/*
+function integer minimax(node, depth)
+    if node is a terminal node or depth <= 0:
+        return the heuristic value of node
+    α = -∞
+    for child in node:                       # evaluation is identical for both players 
+        α = max(α, -minimax(child, depth-1))
+    return α
+
+
+*/
+		NodeEval minmax(Node & node, int depth){
+			NodeEval node_eval;
+			bool toSave = false;
+			
+			if(config.PersistenceUse){
+				node_eval.parseString(persistence.get(node.generateKey()));
+				if(node_eval.depth >= depth){
+					node.print(depth, node_eval);
+					return node_eval;
+				}
+			}
+			
+			node_eval.depth = depth;
+			node_eval.distanceEnd = -1;
+			node_eval.h = LONG_MIN;
+
+			if(node.isEndGame()){ //Finish or no moves
+				node_eval.h = node.heuristic();
+				node_eval.distanceEnd = 0;
+node.print(depth, node_eval);
+				toSave = true;
+			} else if(depth == 0){
+				node_eval.h = node.heuristic();
+				node_eval.distanceEnd = -1;
+node.print(depth, node_eval);
+				toSave = true;
+			} else {
+				vector<Move> moves = node.findMoves();
+				for(unsigned int i = 0 ; i < moves.size() ; i++){
+					Node node2 = node.dup();
+					node2.doMove(moves[i]);
+					NodeEval node_eval_tmp = minmax(node2, depth-1);
+					node_eval_tmp.h = -node_eval_tmp.h;
+
+//					alpha = max(alpha, moves[i].h);
+					if(node_eval.h <= node_eval_tmp.h){
+						node_eval.h = node_eval_tmp.h;
+//						node_eval.depth = node_eval_tmp.depth + 1;
+						node_eval.distanceEnd = node_eval_tmp.distanceEnd;
+						if(node_eval.distanceEnd != -1)
+							node_eval.distanceEnd++;
+						toSave = true;
+					}
+				}
+			}
+node.print(depth, node_eval);
+			if(config.PersistenceUse && toSave){
+				if(depth >= config.PersistenceMinDepthToSave){
+					persistence.set(node.generateKey(), node_eval.makeString());
+				}
+			}
+
+			return node_eval;
+		}
 /*
 function negascout(node, depth, α, β)
     if node is a terminal node or depth = 0
@@ -99,12 +165,13 @@ node.print(depth, node_eval);
 				}
 			}
 node.print(depth, node_eval);
+/* Negascout no puede guardar nodos porque la poda invalida los resultados de los nodos intermedios
 			if(config.PersistenceUse && toSave){
 				if(depth >= config.PersistenceMinDepthToSave){
 					persistence.set(node.generateKey(), node_eval.makeString());
 				}
 			}
-
+*/
 			return node_eval;
 		}
 	public:
@@ -126,26 +193,46 @@ node.print(depth, node_eval);
 			int alpha = LONG_MIN;
 			int beta = LONG_MAX;
 			vector<Move> moves = node.findMoves();
+			NodeEval node_eval;
 
 			for(unsigned int i = 0 ; i < moves.size() ; i++){
 				Node node2 = node.dup();
 				node2.doMove(moves[i]);
-				NodeEval node_eval_tmp = negascout(node2, depth, alpha, beta);
+				NodeEval node_eval_tmp;
+				if(config.Algorithm == ALGORITHM_NEGASCOUT)
+					node_eval_tmp = negascout(node2, depth, alpha, beta);
+				else if(config.Algorithm == ALGORITHM_MINMAX)
+					node_eval_tmp = minmax(node2, depth);
 //				node_eval_tmp.h = -node_eval_tmp.h;
 node2.print(depth, node_eval_tmp);
 //cout << "Move: " << moves[i].x << ", "  << moves[i].y << ", "  << moves[i].h << ", " << moves[i].player << endl;
 				if(i==0){
+					node_eval = node_eval_tmp;
 					best_h = node_eval_tmp.h;
 					best_distance = node_eval_tmp.distanceEnd;
 					num = i;
 				} else if(node_eval_tmp.h > best_h){
+					node_eval = node_eval_tmp;
 					best_h = node_eval_tmp.h;
 					best_distance = node_eval_tmp.distanceEnd;
 					num = i;
 				} else if(node_eval_tmp.h == best_h && node_eval_tmp.distanceEnd < best_distance){ 
+					node_eval = node_eval_tmp;
 					best_h = node_eval_tmp.h;
 					best_distance = node_eval_tmp.distanceEnd;
 					num = i;
+				}
+			}
+			if(config.PersistenceUse){
+				NodeEval node_eval_get;
+				node_eval_get.parseString(persistence.get(node.generateKey()));
+				if(node_eval_get.depth < depth+1){
+					node_eval.h = best_h;
+					node_eval.depth = depth + 1;
+					node_eval.distanceEnd = best_distance;
+					if(node_eval.distanceEnd > -1)
+						node_eval.distanceEnd++;
+					persistence.set(node.generateKey(), node_eval.makeString());
 				}
 			}
 			cout << "num: " <<  num << endl;

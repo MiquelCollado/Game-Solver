@@ -11,10 +11,11 @@ class LevelDBPersistence: public Persistence {
 		leveldb::DB* db;
 	public:
 		LevelDBPersistence();
-		int open(string name);
+		~LevelDBPersistence();
+		void open(string name);
 		string get(string key);
 		int set(string key, string data);
-		int close();
+		void close();
 };
 
 #endif /* H_LEVELDBPERSISTENCE */

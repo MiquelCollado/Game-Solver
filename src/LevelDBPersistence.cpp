@@ -7,8 +7,11 @@ using namespace std;
 LevelDBPersistence::LevelDBPersistence(){
 	db = NULL;
 }
+LevelDBPersistence::~LevelDBPersistence(){
+	db = NULL;
+}
 
-int LevelDBPersistence::open(string name){
+void LevelDBPersistence::open(string name){
 	if(db == NULL){
 		leveldb::Options options;
 		options.create_if_missing = true;
@@ -40,7 +43,7 @@ int LevelDBPersistence::set(string key, string data){
 	return s.ok();
 }
 
-int LevelDBPersistence::close(){
+void LevelDBPersistence::close(){
 	if(db != NULL){
 		delete db;
 		db = NULL;

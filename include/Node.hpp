@@ -12,6 +12,7 @@ class Node {
 			turn = 1;
 //			h = 0;
 		}
+		virtual ~Node(){};
 		void nextPlayer(){
 			turn = (turn % 2) + 1;
 		}

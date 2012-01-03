@@ -179,6 +179,7 @@ class TicTacToe_Node: public Node {
 
 int main(){
 	Config cfg;
+	cfg.Algorithm = ALGORITHM_MINMAX;
 	cfg.PersistenceUse = true;
 	cfg.PersistenceMinDepthToSave = 9;
 	cfg.PersistenceName = "DB_TicTacToe";
