@@ -1,5 +1,5 @@
 #include "Config.hpp"
-#include "Node.hpp"
+#include "NodeSquareBoard.hpp"
 #include "Move.hpp"
 #include "GameSolver.hpp"
 #include "NodeEval.hpp"
@@ -18,16 +18,19 @@ class TicTacToe_Move: public Move {
 		int y;
 };
 
-class TicTacToe_Node: public Node {
+class TicTacToe_Node: public NodeSquareBoard {
 	public:
-		int board[3][3];
-
-		TicTacToe_Node(){
+		TicTacToe_Node() : NodeSquareBoard(BOARD_SIZE_X, BOARD_SIZE_Y){
 			for(int i = 0 ; i < BOARD_SIZE_X ; i++){
 				for(int j = 0 ; j < BOARD_SIZE_Y ; j++){
 					board[i][j] = 0;
 				}
 			}
+		}
+		void init(int v[9]){
+			board[0][0] = v[0]; board[1][0] = v[1]; board[2][0] = v[2];
+			board[0][1] = v[3]; board[1][1] = v[4]; board[2][1] = v[5];
+			board[0][2] = v[6]; board[1][2] = v[7]; board[2][2] = v[8];
 		}
 		string generateKey(){
 			vector<string> keys;
@@ -188,9 +191,8 @@ int main(){
 
 	GameSolver<TicTacToe_Node, TicTacToe_Move, LevelDBPersistence> gs(cfg);
 	TicTacToe_Node board;
-	board.board[0][0] = 1; board.board[1][0] = 1; board.board[2][0] = 0;
-	board.board[0][1] = 0; board.board[1][1] = 2; board.board[2][1] = 0;
-	board.board[0][2] = 0; board.board[1][2] = 0; board.board[2][2] = 0;
+	int v[] = {1,1,0,0,2,0,0,0,0};
+	board.init(v);
 	board.turn = 1;
 	TicTacToe_Move mv = gs.findBestMove(board, 10);
 	board.doMove(mv);

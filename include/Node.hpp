@@ -1,6 +1,10 @@
 #ifndef H_NODE
 #define H_NODE
 
+#include <string>
+
+using namespace std;
+
 class Node {
 	public:
 		int turn;
