@@ -19,6 +19,21 @@ NodeSquareBoard::~NodeSquareBoard(){
 	delete(board);
 }
 
+void NodeSquareBoard::countNumGlobal(int & playerA, int & playerB, int & free){
+	playerA = 0;
+	playerB = 0;
+	free = 0;
+	for(int i=0; i<X; i++){
+		for(int j=0; j<Y; j++){
+			if(BOARD_FREE(board[i][j]))
+				free++;
+			if(BOARD_A(board[i][j]))
+				playerA++;
+			if(BOARD_B(board[i][j]))
+				playerB++;
+		}
+	}
+}
 int NodeSquareBoard::countNumInARow(int x, int y, int incX, int incY){
 	int countColor = 1;
 	int i = 1;
