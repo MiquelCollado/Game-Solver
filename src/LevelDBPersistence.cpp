@@ -23,18 +23,15 @@ void LevelDBPersistence::open(string name){
 string LevelDBPersistence::get(string key){
 	string data;
 	leveldb::Status s = db->Get(leveldb::ReadOptions(), key, &data);
-        cout << "LOAD: " << endl;
-        cout << "LOAD key: " << key << endl;
-        cout << "LOAD str: " << data << endl;
+	if(data.compare("")!=0)
+	        cout << "LOAD key: " << key << " str: " << data << endl;
 
 	return data;
 }
 
 int LevelDBPersistence::set(string key, string data){
 	string value;
-	cout << "SAVE: " << endl;
-	cout << "SAVE key: " << key << endl;
-	cout << "SAVE str: " << data << endl;
+	cout << "SAVE key: " << key << " str: " << data << endl;
 	leveldb::Status s = db->Get(leveldb::ReadOptions(), key, &value);
 	if (s.ok())
 		s = db->Delete(leveldb::WriteOptions(), key);
