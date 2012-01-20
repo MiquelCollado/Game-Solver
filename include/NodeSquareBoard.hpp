@@ -19,7 +19,7 @@ class NodeSquareBoard: public Node {
 		void print();
 		void countNumGlobal(int & playerA, int & playerB, int & free);
 		int countNumInARow(int x, int y, int incX, int incY);
-		int countNumFreeInARow(int x, int y, int incX, int incY);
+		int countNumFreeInARow(int x, int y, int incX, int incY, int same);
 
 };
 

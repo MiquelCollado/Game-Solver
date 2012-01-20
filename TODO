@@ -1,0 +1,44 @@
+TODO
+
+Modificar Negascout (y si es aplicable a Minimax)
+	- Profundidad incremental empezando por el minimo que se graba hasta el maximo pedido
+	- Al generar los movimientos, leer la heuristica de DB o calcularla y ordenar.
+	- Poner un chivato global cuando se poda. Se puede grabar en DB siempre que no se produzca ninguna poda.
+	- Añadir estadisticas de ahorro de calculo con accesos a DB
+	- Implementar un Timeout. Tener siempre preparada la mejor respuesta a dar.
+
+Funcion de autojugar. Verificar con 3 en ralla que aprenda bien.
+En DB.
+	Guardar un tablero especial con info sobre la version de la heuristica. Si no coincide, mostrar un error.
+	La funcion heuristica ha de tener una version
+	Otra posibilidad es que cada tablero guarde tambien la version de la heuristica, y así a equivalente depth se podrá actualizar. Se convivira con diferentes versiones (pensar si puede ser un problema).
+
+Guardar e importar partidas en:
+	Portable Game Notation
+Permanent Brain: Seguir calculando aunque el turno sea del jugador humano
+Guardar el nº de piezas en juego. Para evaluar finales de chess o checkers puede ser bueno que a igual heuristica, mejor menos piezas en juego (DB de finales)
+
+Optimizaciones
+	Pensar en la representacion de los boards para ver si puede ser más eficiente usar bits
+	Igualmente generar keys mas cortas usando bits. (casillas de 2 en 2...)
+
+Juegos
+	juego 4 en ralla (conecta 4)
+	juego damas
+	juego damas chinas
+	juego ajedrez
+	juego GO
+
+Ampliaciones
+	Mas de 2 jugadores (damas de 4 por ejemplo)
+	Azar (parchis)
+	Visión parcial (poker)
+	P2P de intercambio de resultados. (solo de cierto nivel)
+	interface para usar motores de juegos para aprender (gnuchess)
+
+Clientes
+	html5 + websockets
+	html5 + ajax
+	Android + sockets
+	Android + Ajax
+	Android + native IA (en c++ o convertida en Java)

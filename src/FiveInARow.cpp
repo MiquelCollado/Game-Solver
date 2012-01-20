@@ -31,24 +31,72 @@ FiveInARow_Node FiveInARow_Node::dup(){
 
 int FiveInARow_Node::heuristic(){
 	int h = 0;
+	int playerA=0, playerB=0, free=0;
 
+	countNumGlobal(playerA, playerB, free);
 	int end = isEndGame();
 	if(end == GAME_WIN_FIRST){
 		h = LONG_MAX;
 	} else if(end == GAME_WIN_SECOND){
 		h = LONG_MIN;
+	} else if(end == GAME_DRAW){
+		h = 0;
 	} else {
+		h = playerA - playerB;
 		for(int i = 0 ; i < BOARD_SIZE_X ; i++){
 			for(int j = 0 ; j < BOARD_SIZE_Y ; j++){
-				if(board[i][j] == 1)
-					h++;
-				else if(board[i][j] == 2)
-					h--;
+				int countH, countHFreeL, countHFreeR, countV, countVFreeU, countVFreeD;
+				int countD1, countD1FreeL, countD1FreeR, countD2, countD2FreeL, countD2FreeR;
+				int mult;
+				if(board[i][j] != 0){
+					if(board[i][j] == 1)
+						mult = 1;
+					else
+						mult = -1;
+
+					countH = countNumInARow(i, j, 1, 0);
+					countHFreeL = countNumFreeInARow(i, j, 1, 0, board[i][j]);
+					countHFreeR = countNumFreeInARow(i, j, -1, 0, board[i][j]);
+					if(countH + countHFreeL >= 5 && countH + countHFreeR >= 5)
+						h = h + (countH * 4 * mult);
+					else if(countH + countHFreeL >= 5 || countH + countHFreeR >= 5)
+						h = h + (countH * 2 * mult);
+					else if(countH + countHFreeL + countHFreeR >= 5)
+						h = h + (countH * mult);
+
+					countV = countNumInARow(i, j, 0, 1);
+					countVFreeU = countNumFreeInARow(i, j, 0, 1, board[i][j]);
+					countVFreeD = countNumFreeInARow(i, j, 0, -1, board[i][j]);
+					if(countV + countVFreeU >= 5 && countV + countVFreeD >= 5)
+						h = h + (countV * 4 * mult);
+					else if(countV + countVFreeU >= 5 || countV + countVFreeD >= 5)
+						h = h + (countV * 2 * mult);
+					else if(countV + countVFreeU + countVFreeD >= 5)
+						h = h + (countV * mult);
+
+					countD1 = countNumInARow(i, j, 1, 1);
+					countD1FreeL = countNumFreeInARow(i, j, 1, 1, board[i][j]);
+					countD1FreeR = countNumFreeInARow(i, j, -1, -1, board[i][j]);
+					if(countD1 + countD1FreeL >= 5 && countD1 + countD1FreeR >= 5)
+						h = h + (countD1 * 4 * mult);
+					else if(countD1 + countD1FreeL >= 5 || countD1 + countD1FreeR >= 5)
+						h = h + (countD1 * 2 * mult);
+					else if(countD1 + countD1FreeL + countD1FreeR >= 5)
+						h = h + (countD1 * mult);
+
+					countD2 = countNumInARow(i, j, -1, 1);
+					countD2FreeL = countNumFreeInARow(i, j, -1, 1, board[i][j]);
+					countD2FreeR = countNumFreeInARow(i, j, 1, -1, board[i][j]);
+					if(countD2 + countD2FreeL >= 5 && countD2 + countD2FreeR >= 5)
+						h = h + (countD2 * 4 * mult);
+					else if(countD2 + countD2FreeL >= 5 || countD2 + countD2FreeR >= 5)
+						h = h + (countD2 * 2 * mult);
+					else if(countD2 + countD2FreeL + countD2FreeR >= 5)
+						h = h + (countD2 * mult);
+				}
 			}
 		}
 	}
-//			cout << "end: " << end << endl;
-//			print();
 	return h;
 }
 
