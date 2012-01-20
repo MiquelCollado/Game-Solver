@@ -34,7 +34,7 @@ function integer minimax(node, depth)
     if node is a terminal node or depth <= 0:
         return the heuristic value of node
     α = -∞
-    for child in node:                       # evaluation is identical for both players 
+    for child in node:                       # evaluation is identical for both players
         α = max(α, -minimax(child, depth-1))
     return α
 
@@ -43,7 +43,7 @@ function integer minimax(node, depth)
 		NodeEval minmax(Node & node, int depth){
 			NodeEval node_eval;
 			bool toSave = false;
-			
+
 			if(config.PersistenceUse){
 				bool reversed = false;
 				node_eval.parseString(persistence.get(node.generateKey(reversed)));
@@ -54,7 +54,7 @@ function integer minimax(node, depth)
 					return node_eval;
 				}
 			}
-			
+
 			node_eval.depth = depth;
 			node_eval.distanceEnd = -1;
 			node_eval.h = LONG_MIN;
@@ -119,7 +119,7 @@ function negascout(node, depth, α, β)
 		NodeEval negascout(Node & node, int depth, int alpha, int beta){
 			NodeEval node_eval;
 			bool toSave = false;
-			
+
 			if(config.PersistenceUse){
 				bool reversed = false;
 				node_eval.parseString(persistence.get(node.generateKey(reversed)));
@@ -130,7 +130,7 @@ function negascout(node, depth, α, β)
 					return node_eval;
 				}
 			}
-			
+
 			node_eval.depth = depth;
 			node_eval.distanceEnd = -1;
 			node_eval.h = alpha;
@@ -138,12 +138,12 @@ function negascout(node, depth, α, β)
 			if(node.isEndGame()){ //Finish or no moves
 				node_eval.h = node.heuristic();
 				node_eval.distanceEnd = 0;
-node.print(depth, node_eval);
+//node.print(depth, node_eval);
 				toSave = true;
 			} else if(depth == 0){
 				node_eval.h = node.heuristic();
 				node_eval.distanceEnd = -1;
-node.print(depth, node_eval);
+//node.print(depth, node_eval);
 				toSave = true;
 			} else {
 				vector<Move> moves = node.findMoves();
@@ -174,7 +174,7 @@ node.print(depth, node_eval);
 					b = alpha + 1;
 				}
 			}
-node.print(depth, node_eval);
+//node.print(depth, node_eval);
 /* Negascout no puede guardar nodos porque la poda invalida los resultados de los nodos intermedios
 			if(config.PersistenceUse && toSave){
 				if(depth >= config.PersistenceMinDepthToSave){
@@ -226,7 +226,7 @@ node2.print(depth, node_eval_tmp);
 					best_h = node_eval_tmp.h;
 					best_distance = node_eval_tmp.distanceEnd;
 					num = i;
-				} else if(node_eval_tmp.h == best_h && node_eval_tmp.distanceEnd < best_distance){ 
+				} else if(node_eval_tmp.h == best_h && node_eval_tmp.distanceEnd < best_distance){
 					node_eval = node_eval_tmp;
 					best_h = node_eval_tmp.h;
 					best_distance = node_eval_tmp.distanceEnd;
