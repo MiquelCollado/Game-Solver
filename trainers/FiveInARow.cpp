@@ -9,7 +9,8 @@
 
 int main(){
 	Config cfg;
-	cfg.Algorithm = ALGORITHM_MINMAX;
+//	cfg.Algorithm = ALGORITHM_MINMAX;
+	cfg.Algorithm = ALGORITHM_NEGASCOUT;
 	cfg.PersistenceUse = true;
 	cfg.PersistenceMinDepthToSave = 2;
 	cfg.PersistenceName = "DB_FiveInARow";
