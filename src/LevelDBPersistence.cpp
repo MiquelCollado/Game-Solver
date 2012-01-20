@@ -8,6 +8,7 @@ LevelDBPersistence::LevelDBPersistence(){
 	db = NULL;
 }
 LevelDBPersistence::~LevelDBPersistence(){
+	close();
 	db = NULL;
 }
 

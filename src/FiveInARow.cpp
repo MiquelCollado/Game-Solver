@@ -58,41 +58,41 @@ int FiveInARow_Node::heuristic(){
 					countHFreeL = countNumFreeInARow(i, j, 1, 0, board[i][j]);
 					countHFreeR = countNumFreeInARow(i, j, -1, 0, board[i][j]);
 					if(countH + countHFreeL >= 5 && countH + countHFreeR >= 5)
-						h = h + (countH * 4 * mult);
+						h = h + (4 * mult);//The factor countH is implicit because it is evaluated countH times
 					else if(countH + countHFreeL >= 5 || countH + countHFreeR >= 5)
-						h = h + (countH * 2 * mult);
+						h = h + (2 * mult);
 					else if(countH + countHFreeL + countHFreeR >= 5)
-						h = h + (countH * mult);
+						h = h + (mult);
 
 					countV = countNumInARow(i, j, 0, 1);
 					countVFreeU = countNumFreeInARow(i, j, 0, 1, board[i][j]);
 					countVFreeD = countNumFreeInARow(i, j, 0, -1, board[i][j]);
 					if(countV + countVFreeU >= 5 && countV + countVFreeD >= 5)
-						h = h + (countV * 4 * mult);
+						h = h + (4 * mult);
 					else if(countV + countVFreeU >= 5 || countV + countVFreeD >= 5)
-						h = h + (countV * 2 * mult);
+						h = h + (2 * mult);
 					else if(countV + countVFreeU + countVFreeD >= 5)
-						h = h + (countV * mult);
+						h = h + (mult);
 
 					countD1 = countNumInARow(i, j, 1, 1);
 					countD1FreeL = countNumFreeInARow(i, j, 1, 1, board[i][j]);
 					countD1FreeR = countNumFreeInARow(i, j, -1, -1, board[i][j]);
 					if(countD1 + countD1FreeL >= 5 && countD1 + countD1FreeR >= 5)
-						h = h + (countD1 * 4 * mult);
+						h = h + (4 * mult);
 					else if(countD1 + countD1FreeL >= 5 || countD1 + countD1FreeR >= 5)
-						h = h + (countD1 * 2 * mult);
+						h = h + (2 * mult);
 					else if(countD1 + countD1FreeL + countD1FreeR >= 5)
-						h = h + (countD1 * mult);
+						h = h + (mult);
 
 					countD2 = countNumInARow(i, j, -1, 1);
 					countD2FreeL = countNumFreeInARow(i, j, -1, 1, board[i][j]);
 					countD2FreeR = countNumFreeInARow(i, j, 1, -1, board[i][j]);
 					if(countD2 + countD2FreeL >= 5 && countD2 + countD2FreeR >= 5)
-						h = h + (countD2 * 4 * mult);
+						h = h + (4 * mult);
 					else if(countD2 + countD2FreeL >= 5 || countD2 + countD2FreeR >= 5)
-						h = h + (countD2 * 2 * mult);
+						h = h + (2 * mult);
 					else if(countD2 + countD2FreeL + countD2FreeR >= 5)
-						h = h + (countD2 * mult);
+						h = h + (mult);
 				}
 			}
 		}
