@@ -33,7 +33,9 @@ int main(){
 	};
 	board.init(v);
 	board.turn = 1;
-	FiveInARow_Move mv = gs.findBestMove(board, 4);
-	board.doMove(mv);
-	board.print();
+	while(!board.isEndGame()){
+		FiveInARow_Move mv = gs.findBestMove(board, 4);
+		board.doMove(mv);
+		board.print();
+	}
 }

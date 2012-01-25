@@ -28,7 +28,7 @@ template <class Node, class Move, class Persistence>
 class GameSolver {
 		Config config;
 		Persistence persistence;
-
+		bool pruned;
 /*
 function integer minimax(node, depth)
     if node is a terminal node or depth <= 0:
@@ -50,7 +50,7 @@ function integer minimax(node, depth)
 				if(node_eval.depth >= depth && node_eval.depth != 0){
 					if(reversed)
 						node_eval.h = -node_eval.h;
-					node.print(depth, node_eval);
+//					node.print(depth, node_eval);
 					return node_eval;
 				}
 			}
@@ -96,6 +96,7 @@ function integer minimax(node, depth)
 					if(reversed)
 						node_eval.h = -node_eval.h;
 					persistence.set(key, node_eval.makeString());
+					node_eval.h = -node_eval.h;
 				}
 			}
 
@@ -126,7 +127,7 @@ function negascout(node, depth, α, β)
 				if(node_eval.depth >= depth && node_eval.depth != 0){
 					if(reversed)
 						node_eval.h = -node_eval.h;
-					node.print(depth, node_eval);
+//					node.print(depth, node_eval);
 					return node_eval;
 				}
 			}
@@ -168,25 +169,31 @@ function negascout(node, depth, α, β)
 							node_eval.distanceEnd++;
 						toSave = true;
 					}
-					if (alpha >= beta) // Beta cut-off
+					if (alpha >= beta){ // Beta cut-off
+						pruned = true;
 						break;
+					}
 						//return node_eval;
 					b = alpha + 1;
 				}
 			}
 //node.print(depth, node_eval);
-/* Negascout no puede guardar nodos porque la poda invalida los resultados de los nodos intermedios
-			if(config.PersistenceUse && toSave){
+			if(config.PersistenceUse && toSave && !pruned){
 				if(depth >= config.PersistenceMinDepthToSave){
-					persistence.set(node.generateKey(), node_eval.makeString());
+					bool reversed = false;
+					string key = node.generateKey(reversed);
+					if(reversed)
+						node_eval.h = -node_eval.h;
+					persistence.set(key, node_eval.makeString());
+					node_eval.h = -node_eval.h;
 				}
 			}
-*/
 			return node_eval;
 		}
 	public:
 		GameSolver(Config cfg){
 			config = cfg;
+			pruned = false;
 			if(config.PersistenceUse){
 				persistence.open(config.PersistenceName);
 			}
@@ -200,8 +207,6 @@ function negascout(node, depth, α, β)
 			int best_h = 0;
 			int best_distance = -1;
 			int num = -1;
-			int alpha = LONG_MIN;
-			int beta = LONG_MAX;
 			vector<Move> moves = node.findMoves();
 			NodeEval node_eval;
 
@@ -209,12 +214,13 @@ function negascout(node, depth, α, β)
 				Node node2 = node.dup();
 				node2.doMove(moves[i]);
 				NodeEval node_eval_tmp;
-				if(config.Algorithm == ALGORITHM_NEGASCOUT)
-					node_eval_tmp = negascout(node2, depth, alpha, beta);
-				else if(config.Algorithm == ALGORITHM_MINMAX)
+				if(config.Algorithm == ALGORITHM_NEGASCOUT){
+					pruned = false;
+					node_eval_tmp = negascout(node2, depth, LONG_MIN, LONG_MAX);
+				}else if(config.Algorithm == ALGORITHM_MINMAX)
 					node_eval_tmp = minmax(node2, depth);
 //				node_eval_tmp.h = -node_eval_tmp.h;
-node2.print(depth, node_eval_tmp);
+//node2.print(depth, node_eval_tmp);
 //cout << "Move: " << moves[i].x << ", "  << moves[i].y << ", "  << moves[i].h << ", " << moves[i].player << endl;
 				if(i==0){
 					node_eval = node_eval_tmp;
@@ -232,8 +238,30 @@ node2.print(depth, node_eval_tmp);
 					best_distance = node_eval_tmp.distanceEnd;
 					num = i;
 				}
+				if(config.PersistenceUse && depth >= config.PersistenceMinDepthToSave){
+					bool reversed = false;
+					NodeEval node_eval_get;
+					string key = node2.generateKey(reversed);
+					node_eval_get.parseString(persistence.get(key));
+					if(node_eval_get.depth < depth){
+						if(reversed)
+							node_eval_tmp.h = -node_eval_tmp.h;
+						node_eval_tmp.depth = depth;
+						persistence.set(key, node_eval_tmp.makeString());
+					}
+				}
+
+				/*
+				bool reversed = false;
+				string key = node.generateKey(reversed);
+				if(reversed)
+				node_eval.h = -node_eval.h;
+				persistence.set(key, node_eval.makeString());
+				node_eval.h = -node_eval.h;
 			}
-			if(config.PersistenceUse){
+				*/
+			}
+			if(config.PersistenceUse && depth+1 >= config.PersistenceMinDepthToSave){
 				bool reversed = false;
 				NodeEval node_eval_get;
 				node_eval_get.parseString(persistence.get(node.generateKey(reversed)));
@@ -249,10 +277,10 @@ node2.print(depth, node_eval_tmp);
 					persistence.set(key, node_eval.makeString());
 				}
 			}
-			cout << "num: " <<  num << endl;
-			cout << "node.turn: " <<  node.turn << endl;
-			cout << "best_h: " <<  best_h << endl;
-			cout << "best_distance: " <<  best_distance << endl;
+//			cout << "num: " <<  num << endl;
+//			cout << "node.turn: " <<  node.turn << endl;
+//			cout << "best_h: " <<  best_h << endl;
+//			cout << "best_distance: " <<  best_distance << endl;
 			return moves[num];
 
 		}

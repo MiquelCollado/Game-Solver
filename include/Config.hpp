@@ -10,12 +10,12 @@ using namespace std;
 
 class Config {
 	public:
-		int	Algorithm;
+		int		Algorithm;
 		bool	PersistenceUse;
-		int	PersistenceMinDepthToSave;
+		int		PersistenceMinDepthToSave;
 		string	PersistenceName;
 		bool	TimeoutUse;
-		int	TimeoutSeconds;
+		int		TimeoutSeconds;
 
 		Config(){
 			Algorithm = ALGORITHM_NEGASCOUT;

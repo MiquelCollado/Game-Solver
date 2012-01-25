@@ -1,11 +1,11 @@
 Modificar GameSolver (Negascout y si es aplicable a Minimax)
 	- Profundidad incremental empezando por el minimo que se graba hasta el maximo pedido
 	- Al generar los movimientos, leer la heuristica de DB o calcularla y ordenar.
-	- Poner un chivato global cuando se poda. Se puede grabar en DB siempre que no se produzca ninguna poda.
 	- Añadir estadisticas de ahorro de calculo con accesos a DB
 	- Implementar un Timeout. Tener siempre preparada la mejor respuesta a dar.
 	- Opción de hacer un aleatorio entre las mejores jugadas que empaten en heuristica o escoger siempre una (por orden de generación, o canonico...)
-
+	- Dar la opcion de que no pode en el nivel mas alto en findBestMoves. La razón es para que cuando se evalue un tablero, se graben en DB todos los hijos y no solo el padre.
+	Ademas la ventaja es que en la busqueda por profundidad incremental, en cada paso se usara el resultado del anterior para ordenar los movimientos
 Funcion de autojugar.
 	Verificar con 3 en ralla que aprenda bien.
 	Buscar bases de datos de partidas y hacer learning a partir de las mismas (chess, go, ...)
@@ -20,7 +20,7 @@ En DB.
 	Otra posibilidad es que cada tablero guarde tambien la version de la heuristica, y así a equivalente depth se podrá actualizar. Se convivira con diferentes versiones (pensar si puede ser un problema).
 
 Guardar e importar partidas en:
-	Portable Game Notation
+	Portable Game Notation(chess)
 
 Guardar el nº de piezas en juego. Para evaluar finales de chess o checkers puede ser bueno que a igual heuristica, mejor menos piezas en juego (DB de finales)
 
