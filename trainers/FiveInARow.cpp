@@ -34,8 +34,9 @@ int main(){
 	board.init(v);
 	board.turn = 1;
 	while(!board.isEndGame()){
-		FiveInARow_Move mv = gs.findBestMove(board, 4);
+		FiveInARow_Move mv = gs.findBestMove(board, 3);
 		board.doMove(mv);
 		board.print();
 	}
+	cout << "End" << endl;
 }

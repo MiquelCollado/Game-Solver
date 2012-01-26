@@ -64,11 +64,13 @@ function integer minimax(node, depth)
 			if(node.isEndGame()){ //Finish or no moves
 				node_eval.h = node.heuristic();
 				node_eval.distanceEnd = 0;
+//cout << "END GAME" << endl;
 //node.print(depth, node_eval);
 				toSave = true;
 			} else if(depth == 0){
 				node_eval.h = node.heuristic();
 				node_eval.distanceEnd = -1;
+//cout << "DEPTH 0" << endl;
 //node.print(depth, node_eval);
 				toSave = true;
 			} else {
@@ -89,6 +91,8 @@ function integer minimax(node, depth)
 						toSave = true;
 					}
 				}
+//cout << "COMPUTED" << endl;
+//node.print(depth, node_eval);
 			}
 //node.print(depth, node_eval);
 			if(config.PersistenceUse && toSave){
@@ -101,6 +105,7 @@ function integer minimax(node, depth)
 					node_eval.h = -node_eval.h;
 				}
 			}
+//if(depth == 1) exit(0);
 
 			return node_eval;
 		}
@@ -125,7 +130,7 @@ function negascout(node, depth, α, β)
 			bool reversed = false;
 			string key;
 
-			if(config.PersistenceUse){
+			if(config.PersistenceUse && depth > 0){
 				key = node.generateKey(reversed);
 				node_eval.parseString(persistence.get(key));
 				if(node_eval.depth >= depth && node_eval.depth != 0){

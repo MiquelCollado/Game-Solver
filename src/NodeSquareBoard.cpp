@@ -163,9 +163,9 @@ void NodeSquareBoard::countNumGlobal(int & playerA, int & playerB, int & free){
 			unsigned char p = board[i][j];
 			if(p == 0)
 				free++;
-			if(p < PieceDiff)
+			else if(p <= PieceDiff)
 				playerA++;
-			if(p >= PieceDiff)
+			else //if(p > PieceDiff)
 				playerB++;
 		}
 	}
@@ -221,7 +221,8 @@ int NodeSquareBoard::countNumFreeInARow(int x, int y, int incX, int incY, unsign
 	}
 	//Cuenta los espacios libres en la misma dirección
 	while(_x1 < X && _y1 < Y && _x1 >= 0 && _y1 >= 0){
-		if (board[_x1][_y1] == 0 || board[_x1][_y1] == same){
+		unsigned char p2 = board[_x1][_y1];
+		if (p2 == 0 || p2 == same){
 			countFree++;
 		} else {
 			break;

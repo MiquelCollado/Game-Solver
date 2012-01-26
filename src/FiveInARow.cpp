@@ -43,6 +43,7 @@ int FiveInARow_Node::heuristic(){
 		h = 0;
 	} else {
 		h = playerA - playerB;
+//cout << "H Diff playerA: " << playerA << " playerB: " << playerB << " free: " << free << endl;
 		for(int i = 0 ; i < BOARD_SIZE_X ; i++){
 			for(int j = 0 ; j < BOARD_SIZE_Y ; j++){
 				int countH, countHFreeL, countHFreeR, countV, countVFreeU, countVFreeD;
@@ -93,6 +94,7 @@ int FiveInARow_Node::heuristic(){
 						h = h + (2 * mult);
 					else if(countD2 + countD2FreeL + countD2FreeR >= 5)
 						h = h + (mult);
+//cout << "H Update (" << i << "," << j << "): " << h << endl;
 				}
 			}
 		}
