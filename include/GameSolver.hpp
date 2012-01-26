@@ -102,7 +102,8 @@ function integer minimax(node, depth)
 					if(reversed)
 						node_eval.h = -node_eval.h;
 					persistence.set(key, node_eval.makeString());
-					node_eval.h = -node_eval.h;
+					if(reversed)
+						node_eval.h = -node_eval.h;
 				}
 			}
 //if(depth == 1) exit(0);
@@ -194,7 +195,8 @@ function negascout(node, depth, α, β)
 					if(reversed)
 						node_eval.h = -node_eval.h;
 					persistence.set(key, node_eval.makeString());
-					node_eval.h = -node_eval.h;
+					if(reversed)
+						node_eval.h = -node_eval.h;
 				}
 			}
 			return node_eval;
@@ -228,7 +230,7 @@ function negascout(node, depth, α, β)
 					node_eval_tmp = negascout(node2, depth, LONG_MIN, LONG_MAX);
 				}else if(config.Algorithm == ALGORITHM_MINMAX)
 					node_eval_tmp = minmax(node2, depth);
-//				node_eval_tmp.h = -node_eval_tmp.h;
+				node_eval_tmp.h = -node_eval_tmp.h;
 //node2.print(depth, node_eval_tmp);
 //cout << "Move: " << moves[i].x << ", "  << moves[i].y << ", "  << moves[i].h << ", " << moves[i].player << endl;
 				if(i==0){
@@ -257,6 +259,8 @@ function negascout(node, depth, α, β)
 							node_eval_tmp.h = -node_eval_tmp.h;
 						node_eval_tmp.depth = depth;
 						persistence.set(key, node_eval_tmp.makeString());
+						if(reversed)
+							node_eval_tmp.h = -node_eval_tmp.h;
 					}
 				}
 
@@ -273,14 +277,15 @@ function negascout(node, depth, α, β)
 			if(config.PersistenceUse && depth+1 >= config.PersistenceMinDepthToSave){
 				bool reversed = false;
 				NodeEval node_eval_get;
-				node_eval_get.parseString(persistence.get(node.generateKey(reversed)));
+				string key = node.generateKey(reversed);
+				node_eval_get.parseString(persistence.get(key));
 				if(node_eval_get.depth < depth+1){
 					node_eval.h = best_h;
 					node_eval.depth = depth + 1;
 					node_eval.distanceEnd = best_distance;
 					if(node_eval.distanceEnd > -1)
 						node_eval.distanceEnd++;
-					string key = node.generateKey(reversed);
+//					string key = node.generateKey(reversed);
 					if(reversed)
 						node_eval.h = -node_eval.h;
 					persistence.set(key, node_eval.makeString());
