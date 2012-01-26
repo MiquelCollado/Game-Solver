@@ -20,7 +20,7 @@ class FiveInARow_Node: public NodeSquareBoard {
 	public:
 		FiveInARow_Node();
 		~FiveInARow_Node();
-		void init(int v[99]);
+		void init(unsigned char v[99]);
 		FiveInARow_Node dup();
 		int heuristic();
 		int isEndGame();

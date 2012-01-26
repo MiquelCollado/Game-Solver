@@ -9,7 +9,7 @@ TicTacToe_Node::TicTacToe_Node() : NodeSquareBoard(BOARD_SIZE_X, BOARD_SIZE_Y, B
 }
 TicTacToe_Node::~TicTacToe_Node(){;}
 
-void TicTacToe_Node::init(int v[9]){
+void TicTacToe_Node::init(unsigned char v[9]){
 	board[0][0] = v[0]; board[1][0] = v[1]; board[2][0] = v[2];
 	board[0][1] = v[3]; board[1][1] = v[4]; board[2][1] = v[5];
 	board[0][2] = v[6]; board[1][2] = v[7]; board[2][2] = v[8];

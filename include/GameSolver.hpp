@@ -43,10 +43,12 @@ function integer minimax(node, depth)
 		NodeEval minmax(Node & node, int depth){
 			NodeEval node_eval;
 			bool toSave = false;
+			bool reversed = false;
+			string key;
 
 			if(config.PersistenceUse){
-				bool reversed = false;
-				node_eval.parseString(persistence.get(node.generateKey(reversed)));
+				key = node.generateKey(reversed);
+				node_eval.parseString(persistence.get(key));
 				if(node_eval.depth >= depth && node_eval.depth != 0){
 					if(reversed)
 						node_eval.h = -node_eval.h;
@@ -91,8 +93,8 @@ function integer minimax(node, depth)
 //node.print(depth, node_eval);
 			if(config.PersistenceUse && toSave){
 				if(depth >= config.PersistenceMinDepthToSave){
-					bool reversed = false;
-					string key = node.generateKey(reversed);
+//					bool reversed = false;
+//					string key = node.generateKey(reversed);
 					if(reversed)
 						node_eval.h = -node_eval.h;
 					persistence.set(key, node_eval.makeString());
@@ -120,10 +122,12 @@ function negascout(node, depth, α, β)
 		NodeEval negascout(Node & node, int depth, int alpha, int beta){
 			NodeEval node_eval;
 			bool toSave = false;
+			bool reversed = false;
+			string key;
 
 			if(config.PersistenceUse){
-				bool reversed = false;
-				node_eval.parseString(persistence.get(node.generateKey(reversed)));
+				key = node.generateKey(reversed);
+				node_eval.parseString(persistence.get(key));
 				if(node_eval.depth >= depth && node_eval.depth != 0){
 					if(reversed)
 						node_eval.h = -node_eval.h;
@@ -180,8 +184,8 @@ function negascout(node, depth, α, β)
 //node.print(depth, node_eval);
 			if(config.PersistenceUse && toSave && !pruned){
 				if(depth >= config.PersistenceMinDepthToSave){
-					bool reversed = false;
-					string key = node.generateKey(reversed);
+//					bool reversed = false;
+//					string key = node.generateKey(reversed);
 					if(reversed)
 						node_eval.h = -node_eval.h;
 					persistence.set(key, node_eval.makeString());

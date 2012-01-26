@@ -34,7 +34,7 @@ class TicTacToe_Node: public NodeSquareBoard {
 	public:
 		TicTacToe_Node();
 		~TicTacToe_Node();
-		void init(int v[9]);
+		void init(unsigned char v[9]);
 
 		TicTacToe_Node dup();
 		int heuristic();

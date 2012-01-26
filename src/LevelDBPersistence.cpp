@@ -38,6 +38,7 @@ int LevelDBPersistence::set(string key, string data){
 		s = db->Delete(leveldb::WriteOptions(), key);
 //	if (s.ok())
 	s = db->Put(leveldb::WriteOptions(), key, data);
+//	exit(0);
 	return s.ok();
 }
 

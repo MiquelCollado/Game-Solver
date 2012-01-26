@@ -5,11 +5,11 @@
 
 #include "LevelDBPersistence.hpp"
 
-FiveInARow_Node::FiveInARow_Node() : NodeSquareBoard(BOARD_SIZE_X, BOARD_SIZE_Y, BOARD_DIFF){
+FiveInARow_Node::FiveInARow_Node() : NodeSquareBoard(BOARD_SIZE_X, BOARD_SIZE_Y, (unsigned char)BOARD_DIFF){
 }
 FiveInARow_Node::~FiveInARow_Node(){;}
 
-void FiveInARow_Node::init(int v[99]){
+void FiveInARow_Node::init(unsigned char v[99]){
 	int idx = 0;
 	for(int j = 0; j< BOARD_SIZE_Y ; j++){
 		for (int i = 0; i < BOARD_SIZE_X ; i++){

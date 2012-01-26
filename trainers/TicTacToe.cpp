@@ -18,7 +18,7 @@ int main(){
 
 	GameSolver<TicTacToe_Node, TicTacToe_Move, LevelDBPersistence> gs(cfg);
 	TicTacToe_Node board;
-	int v[] = {1,1,0,0,2,0,0,0,0};
+	unsigned char v[] = {1,1,0,0,2,0,0,0,0};
 	board.init(v);
 	board.turn = 1;
 	TicTacToe_Move mv = gs.findBestMove(board, 10);

@@ -19,7 +19,7 @@ int main(){
 
 	GameSolver<FiveInARow_Node, FiveInARow_Move, LevelDBPersistence> gs(cfg);
 	FiveInARow_Node board;
-	int v[] = {
+	unsigned char v[] = {
 		0,0,0,0,0,0,0,0,0,0,
 		0,0,0,0,0,0,0,0,0,0,
 		0,0,0,0,0,0,0,0,0,0,

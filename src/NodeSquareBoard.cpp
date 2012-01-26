@@ -6,14 +6,14 @@
 
 using namespace std;
 
-NodeSquareBoard::NodeSquareBoard(int x, int y, int pieceDiff){
+NodeSquareBoard::NodeSquareBoard(int x, int y, unsigned char pieceDiff){
 	X = x;
 	Y = y;
 	PieceDiff = pieceDiff;
-	board = new int * [X];
+	board = new unsigned char * [X];
 
 	for(int i=0; i<X; i++){
-		board[i] = new int [Y];
+		board[i] = new unsigned char [Y];
 		for(int j = 0 ; j < Y ; j++){
 			board[i][j] = 0;
 		}
@@ -26,81 +26,115 @@ NodeSquareBoard::~NodeSquareBoard(){
 	delete(board);
 }
 
-int NodeSquareBoard::changePlayerPiece(int piece){
-	if(piece > PieceDiff)
-		return piece - PieceDiff;
-	else if(piece != 0)
-		return piece + PieceDiff;
-	else
-		return 0;
-}
 string NodeSquareBoard::generateKey(bool & reversed){
-	vector<string> keys;
-	stringstream ss1, ss2, ss3, ss4, ss5, ss6, ss7, ss8;
-	stringstream ss9, ss10, ss11, ss12, ss13, ss14, ss15, ss16;
+	unsigned char ckeys[8][X*Y+1+1];
+	int i, j, k;
 
 	int other_turn = nextPlayer(turn);
 	if(turn > other_turn)
 		reversed = true;
 	else
 		reversed = false;
-	ss1 << turn;//add number to the stream
-	ss2 << turn;//add number to the stream
-	ss3 << turn;//add number to the stream
-	ss4 << turn;//add number to the stream
-	ss5 << turn;//add number to the stream
-	ss6 << turn;//add number to the stream
-	ss7 << turn;//add number to the stream
-	ss8 << turn;//add number to the stream
-	ss9 << other_turn;//add number to the stream
-	ss10 << other_turn;//add number to the stream
-	ss11 << other_turn;//add number to the stream
-	ss12 << other_turn;//add number to the stream
-	ss13 << other_turn;//add number to the stream
-	ss14 << other_turn;//add number to the stream
-	ss15 << other_turn;//add number to the stream
-	ss16 << other_turn;//add number to the stream
-	for(int i = 0 ; i < X ; i++){
-		for(int j = 0 ; j < Y ; j++){
-			ss1 << board[i]			[j];		//Normal
-			ss2 << board[X - i - 1]		[j];		//Flip X
-			ss3 << board[i]			[Y - j - 1];	//Flip Y
-			ss4 << board[X - i - 1]		[Y - j - 1]; 	//Flip XY
-			ss5 << board[j]			[i];		//Mirror
-			ss6 << board[Y - j - 1]		[i];		//Mirror Flip X
-			ss7 << board[j]			[X - i - 1];	//Mirror Flip Y
-			ss8 << board[Y - j - 1]		[X - i - 1]; 	//Mirror Flip XY
-			ss9 <<  changePlayerPiece(board[i]			[j]);		//Changed plyers Normal
-			ss10 << changePlayerPiece(board[X - i - 1]		[j]);		//Changed plyers Flip X
-			ss11 << changePlayerPiece(board[i]			[Y - j - 1]);	//Changed plyers Flip Y
-			ss12 << changePlayerPiece(board[X - i - 1]		[Y - j - 1]); 	//Changed plyers Flip XY
-			ss13 << changePlayerPiece(board[j]			[i]);		//Changed plyers Mirror
-			ss14 << changePlayerPiece(board[Y - j - 1]		[i]);		//Changed plyers Mirror Flip X
-			ss15 << changePlayerPiece(board[j]			[X - i - 1]);	//Changed plyers Mirror Flip Y
-			ss16 << changePlayerPiece(board[Y - j - 1]		[X - i - 1]); 	//Changed plyers Mirror Flip XY
+	unsigned char *ckey0 = ckeys[0];
+	unsigned char *ckey1 = ckeys[1];
+	unsigned char *ckey2 = ckeys[2];
+	unsigned char *ckey3 = ckeys[3];
+	unsigned char *ckey4 = ckeys[4];
+	unsigned char *ckey5 = ckeys[5];
+	unsigned char *ckey6 = ckeys[6];
+	unsigned char *ckey7 = ckeys[7];
+	if(turn == 1){
+		unsigned char t = '0' + (unsigned char)turn;
+		*(ckey0++) = t;
+		*(ckey1++) = t;
+		*(ckey2++) = t;
+		*(ckey3++) = t;
+		*(ckey4++) = t;
+		*(ckey5++) = t;
+		*(ckey6++) = t;
+		*(ckey7++) = t;
+//		for(i=0;i<8;i++)
+//			ckeys[i][0] = '0' + (unsigned char)turn;
+	} else {
+		unsigned char t = '0' + (unsigned char)other_turn;
+		*(ckey0++) = t;
+		*(ckey1++) = t;
+		*(ckey2++) = t;
+		*(ckey3++) = t;
+		*(ckey4++) = t;
+		*(ckey5++) = t;
+		*(ckey6++) = t;
+		*(ckey7++) = t;
+//		for(i=0;i<8;i++)
+//			ckeys[i][0] = '0' + (unsigned char)other_turn;
+	}
+
+	k = 1;
+	if(turn == 1){
+		for(i = 0 ; i < X ; i++){
+			for(j = 0 ; j < Y ; j++){
+				*(ckey0++) = '0' + board[i]			[j];		//Normal
+				*(ckey1++) = '0' + board[X - i - 1]		[j];		//Flip X
+				*(ckey2++) = '0' + board[i]			[Y - j - 1];	//Flip Y
+				*(ckey3++) = '0' + board[X - i - 1]		[Y - j - 1]; 	//Flip XY
+				*(ckey4++) = '0' + board[j]			[i];		//Mirror
+				*(ckey5++) = '0' + board[Y - j - 1]		[i];		//Mirror Flip X
+				*(ckey6++) = '0' + board[j]			[X - i - 1];	//Mirror Flip Y
+				*(ckey7++) = '0' + board[Y - j - 1]		[X - i - 1]; 	//Mirror Flip XY
+/*				ckeys[0][k] = '0' + board[i]			[j];		//Normal
+				ckeys[1][k] = '0' + board[X - i - 1]		[j];		//Flip X
+				ckeys[2][k] = '0' + board[i]			[Y - j - 1];	//Flip Y
+				ckeys[3][k] = '0' + board[X - i - 1]		[Y - j - 1]; 	//Flip XY
+				ckeys[4][k] = '0' + board[j]			[i];		//Mirror
+				ckeys[5][k] = '0' + board[Y - j - 1]		[i];		//Mirror Flip X
+				ckeys[6][k] = '0' + board[j]			[X - i - 1];	//Mirror Flip Y
+				ckeys[7][k] = '0' + board[Y - j - 1]		[X - i - 1]; 	//Mirror Flip XY*/
+				k++;
+			}
+		}
+	} else {
+		for(i = 0 ; i < X ; i++){
+			for(j = 0 ; j < Y ; j++){
+				*(ckey0++) = '0' + changePlayerPiece(board[i]			[j]);		//Changed players Normal
+				*(ckey1++) = '0' + changePlayerPiece(board[X - i - 1]		[j]);		//Changed players Flip X
+				*(ckey2++) = '0' + changePlayerPiece(board[i]			[Y - j - 1]);	//Changed players Flip Y
+				*(ckey3++) = '0' + changePlayerPiece(board[X - i - 1]		[Y - j - 1]); 	//Changed players Flip XY
+				*(ckey4++) = '0' + changePlayerPiece(board[j]			[i]);		//Changed players Mirror
+				*(ckey5++) = '0' + changePlayerPiece(board[Y - j - 1]		[i]);		//Changed players Mirror Flip X
+				*(ckey6++) = '0' + changePlayerPiece(board[j]			[X - i - 1]);	//Changed players Mirror Flip Y
+				*(ckey7++) = '0' + changePlayerPiece(board[Y - j - 1]		[X - i - 1]); 	//Changed players Mirror Flip XY
+/*				ckeys[0][k] = '0' + changePlayerPiece(board[i]			[j]);		//Changed players Normal
+				ckeys[1][k] = '0' + changePlayerPiece(board[X - i - 1]		[j]);		//Changed players Flip X
+				ckeys[2][k] = '0' + changePlayerPiece(board[i]			[Y - j - 1]);	//Changed players Flip Y
+				ckeys[3][k] = '0' + changePlayerPiece(board[X - i - 1]		[Y - j - 1]); 	//Changed players Flip XY
+				ckeys[4][k] = '0' + changePlayerPiece(board[j]			[i]);		//Changed players Mirror
+				ckeys[5][k] = '0' + changePlayerPiece(board[Y - j - 1]		[i]);		//Changed players Mirror Flip X
+				ckeys[6][k] = '0' + changePlayerPiece(board[j]			[X - i - 1]);	//Changed players Mirror Flip Y
+				ckeys[7][k] = '0' + changePlayerPiece(board[Y - j - 1]		[X - i - 1]); 	//Changed players Mirror Flip XY*/
+				k++;
+			}
 		}
 	}
-	keys.push_back(ss1.str());
-	keys.push_back(ss2.str());
-	keys.push_back(ss3.str());
-	keys.push_back(ss4.str());
-	keys.push_back(ss5.str());
-	keys.push_back(ss6.str());
-	keys.push_back(ss7.str());
-	keys.push_back(ss8.str());
-	keys.push_back(ss9.str());
-	keys.push_back(ss10.str());
-	keys.push_back(ss11.str());
-	keys.push_back(ss12.str());
-	keys.push_back(ss13.str());
-	keys.push_back(ss14.str());
-	keys.push_back(ss15.str());
-	keys.push_back(ss16.str());
-	// using function as comp
-	sort (keys.begin(), keys.end());
-//			sort (keys.begin(), keys.end(), myfunction);
+	*(ckey0++) = 0;
+	*(ckey1++) = 0;
+	*(ckey2++) = 0;
+	*(ckey3++) = 0;
+	*(ckey4++) = 0;
+	*(ckey5++) = 0;
+	*(ckey6++) = 0;
+	*(ckey7++) = 0;
+//	for(i=0;i<8;i++) // Ending strings
+//		ckeys[i][k] = 0;
 
-	return keys[0];//return a string with the contents of the stream
+	k=0;
+	for(i=1;i<8;i++){ // Sort
+		if(strcmp((const char *)ckeys[k], (const char *)ckeys[i]) > 0)
+			k = i;
+	}
+	string ret((const char *)ckeys[k]);
+//	cout << ret << endl;
+//	exit(0);
+	return ret;
 }
 void NodeSquareBoard::print(int depth, NodeEval data){
 	string pre(12 - depth,  ' ');
@@ -113,7 +147,7 @@ void NodeSquareBoard::print(){
 	cout << "turn: " << turn << endl;
 	for(int j = 0 ; j < Y ; j++){
 		for(int i = 0 ; i < X ; i++){
-			cout << board[i][j];
+			cout << (int) board[i][j];
 		}
 		cout << endl;
 	}
@@ -123,13 +157,15 @@ void NodeSquareBoard::countNumGlobal(int & playerA, int & playerB, int & free){
 	playerA = 0;
 	playerB = 0;
 	free = 0;
+//	unsigned char *p = &board[0][0];
 	for(int i=0; i<X; i++){
 		for(int j=0; j<Y; j++){
-			if(board[i][j] == 0)
+			unsigned char p = board[i][j];
+			if(p == 0)
 				free++;
-			if(board[i][j] < PieceDiff)
+			if(p < PieceDiff)
 				playerA++;
-			if(board[i][j] >= PieceDiff)
+			if(p >= PieceDiff)
 				playerB++;
 		}
 	}
@@ -138,45 +174,61 @@ int NodeSquareBoard::countNumInARow(int x, int y, int incX, int incY){
 	int countColor = 1;
 	int i = 1;
 	//Cuenta las piezas del mismo color hacia un lado
-	while(x + incX*i < X && y + incY*i < Y && x + incX*i >= 0 && y + incY*i >= 0){
-		if (board[x][y] == board[x + incX*i][y + incY*i]){
+	unsigned char p = board[x][y];
+	int _x1 = x + incX*i;
+	int _y1 = y + incY*i;
+	while(_x1 < X && _y1 < Y && _x1 >= 0 && _y1 >= 0){
+		if (p == board[_x1][_y1]){
 			countColor++;
 		} else {
 			break;
 		}
 		i++;
+		_x1 = x + incX*i;
+		_y1 = y + incY*i;
 	}
 	i = 1;
+	_x1 = x - incX*i;
+	_y1 = y - incY*i;
 	//Cuenta las piezas del mismo color hacia el otro lado
-	while(x - incX*i >= 0 && y - incY*i >= 0 && x - incX*i < X && y - incY*i < Y){
-		if (board[x][y] == board[x - incX*i][y - incY*i]){
+	while(_x1 >= 0 && _y1 >= 0 && _x1 < X && _y1 < Y){
+		if (p == board[_x1][_y1]){
 			countColor++;
 		} else {
 			break;
 		}
 		i++;
+		_x1 = x - incX*i;
+		_y1 = y - incY*i;
 	}
 	return countColor;
 }
 
-int NodeSquareBoard::countNumFreeInARow(int x, int y, int incX, int incY, int same=0){
+int NodeSquareBoard::countNumFreeInARow(int x, int y, int incX, int incY, unsigned char same=0){
 	int countFree = 0;
 	int i = 1;
 	//Se salta las piezas del mismo color en una dirección
-	while(x + incX*i < X && y + incY*i < Y && x + incX*i >=0 && y + incY*i >=0){
-		if (board[x][y] != board[x + incX*i][y + incY*i]){
+	int _x1 = x + incX*i;
+	int _y1 = y + incY*i;
+	unsigned char p = board[x][y];
+	while(_x1 < X && _y1 < Y && _x1 >=0 && _y1 >=0){
+		if (p != board[_x1][_y1]){
 			break;
 		}
 		i++;
+		_x1 = x + incX*i;
+		_y1 = y + incY*i;
 	}
 	//Cuenta los espacios libres en la misma dirección
-	while(x + incX*i < X && y + incY*i < Y && x + incX*i >= 0 && y + incY*i >= 0){
-		if (board[x + incX*i][y + incY*i] == 0 || board[x + incX*i][y + incY*i] == same){
+	while(_x1 < X && _y1 < Y && _x1 >= 0 && _y1 >= 0){
+		if (board[_x1][_y1] == 0 || board[_x1][_y1] == same){
 			countFree++;
 		} else {
 			break;
 		}
 		i++;
+		_x1 = x + incX*i;
+		_y1 = y + incY*i;
 	}
 	return countFree;
 }

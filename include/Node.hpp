@@ -12,7 +12,7 @@ class Node {
 //		int h;
 
 		virtual string generateKey(bool & reversed)=0;
-		virtual int changePlayerPiece(int p)=0;
+//		virtual int changePlayerPiece(int p)=0;
 		virtual void print(int depth, NodeEval data)=0;
 		virtual void print()=0;
 
