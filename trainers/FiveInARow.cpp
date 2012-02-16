@@ -9,10 +9,10 @@
 
 int main(){
 	Config cfg;
-//	cfg.Algorithm = ALGORITHM_MINMAX;
-	cfg.Algorithm = ALGORITHM_NEGASCOUT;
+	cfg.Algorithm = ALGORITHM_MINMAX;
+//	cfg.Algorithm = ALGORITHM_ALPHABETA;
 	cfg.PersistenceUse = true;
-	cfg.PersistenceMinDepthToSave = 2;
+	cfg.PersistenceMinDepthToSave = 3;
 	cfg.PersistenceName = "DB_FiveInARow";
 	cfg.TimeoutUse = false;
 	cfg.TimeoutSeconds = 0;
@@ -34,7 +34,7 @@ int main(){
 	board.init(v);
 	board.turn = 1;
 	while(!board.isEndGame()){
-		FiveInARow_Move mv = gs.findBestMove(board, 3);
+		FiveInARow_Move mv = gs.findBestMove(board, 5);
 		board.doMove(mv);
 		board.print();
 	}

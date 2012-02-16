@@ -2,7 +2,7 @@
 #define H_CONFIG
 
 #define ALGORITHM_MINMAX	1
-#define ALGORITHM_NEGASCOUT	2
+#define ALGORITHM_ALPHABETA	2
 
 #include <string>
 
@@ -18,7 +18,7 @@ class Config {
 		int		TimeoutSeconds;
 
 		Config(){
-			Algorithm = ALGORITHM_NEGASCOUT;
+			Algorithm = ALGORITHM_ALPHABETA;
 			PersistenceUse = false;
 			PersistenceMinDepthToSave = 0;
 			PersistenceName = "";

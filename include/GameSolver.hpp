@@ -29,103 +29,27 @@ class GameSolver {
 		Config config;
 		Persistence persistence;
 		bool pruned;
+
 /*
-function integer minimax(node, depth)
-    if node is a terminal node or depth <= 0:
-        return the heuristic value of node
-    α = -∞
-    for child in node:                       # evaluation is identical for both players
-        α = max(α, -minimax(child, depth-1))
-    return α
-
-
+function alphabeta(node, depth, α, β, Player)
+	if  depth = 0 or node is a terminal node
+		return the heuristic value of node
+	if  Player = MaxPlayer
+		for each child of node
+			α := max(α, alphabeta(child, depth-1, α, β, not(Player) ))
+			if β ≤ α
+				break                             (* Beta cut-off *)
+		return α
+	else
+		for each child of node
+			β := min(β, alphabeta(child, depth-1, α, β, not(Player) ))
+			if β ≤ α
+				break                             (* Alpha cut-off *)
+		return β
+(* Initial call *)
+alphabeta(origin, depth, -infinity, +infinity, MaxPlayer)
 */
-		NodeEval minmax(Node & node, int depth){
-			NodeEval node_eval;
-			bool toSave = false;
-			bool reversed = false;
-			string key;
-
-			if(config.PersistenceUse){
-				key = node.generateKey(reversed);
-				node_eval.parseString(persistence.get(key));
-				if(node_eval.depth >= depth && node_eval.depth != 0){
-					if(reversed)
-						node_eval.h = -node_eval.h;
-//					node.print(depth, node_eval);
-					return node_eval;
-				}
-			}
-
-			node_eval.depth = depth;
-			node_eval.distanceEnd = -1;
-			node_eval.h = LONG_MIN;
-
-			if(node.isEndGame()){ //Finish or no moves
-				node_eval.h = node.heuristic();
-				node_eval.distanceEnd = 0;
-//cout << "END GAME" << endl;
-//node.print(depth, node_eval);
-				toSave = true;
-			} else if(depth == 0){
-				node_eval.h = node.heuristic();
-				node_eval.distanceEnd = -1;
-//cout << "DEPTH 0" << endl;
-//node.print(depth, node_eval);
-				toSave = true;
-			} else {
-				vector<Move> moves = node.findMoves();
-				for(unsigned int i = 0 ; i < moves.size() ; i++){
-					Node node2 = node.dup();
-					node2.doMove(moves[i]);
-					NodeEval node_eval_tmp = minmax(node2, depth-1);
-					node_eval_tmp.h = -node_eval_tmp.h;
-
-//					alpha = max(alpha, moves[i].h);
-					if(node_eval.h <= node_eval_tmp.h){
-						node_eval.h = node_eval_tmp.h;
-//						node_eval.depth = node_eval_tmp.depth + 1;
-						node_eval.distanceEnd = node_eval_tmp.distanceEnd;
-						if(node_eval.distanceEnd != -1)
-							node_eval.distanceEnd++;
-						toSave = true;
-					}
-				}
-//cout << "COMPUTED" << endl;
-//node.print(depth, node_eval);
-			}
-//node.print(depth, node_eval);
-			if(config.PersistenceUse && toSave){
-				if(depth >= config.PersistenceMinDepthToSave){
-//					bool reversed = false;
-//					string key = node.generateKey(reversed);
-					if(reversed)
-						node_eval.h = -node_eval.h;
-					persistence.set(key, node_eval.makeString());
-					if(reversed)
-						node_eval.h = -node_eval.h;
-				}
-			}
-//if(depth == 1) exit(0);
-
-			return node_eval;
-		}
-/*
-function negascout(node, depth, α, β)
-    if node is a terminal node or depth = 0
-        return the heuristic value of node
-    b := β                                             (* initial window is (-β, -α) *)
-    foreach child of node
-        score := -negascout (child, depth - 1, -b, -α)
-        if α < score < β and child is not first child      (* check if null-window failed high *)
-            score := -negascout(child, depth - 1, -β, -α)  (* full re-search *)
-        α := max(α, score)
-        if α ≥ β
-            return α                                   (* Beta cut-off *)
-        b := α + 1                                     (* set new null window *)
-    return α
-*/
-		NodeEval negascout(Node & node, int depth, int alpha, int beta){
+		NodeEval alphabeta(Node & node, int depth, int alpha, int beta){
 			NodeEval node_eval;
 			bool toSave = false;
 			bool reversed = false;
@@ -144,7 +68,6 @@ function negascout(node, depth, α, β)
 
 			node_eval.depth = depth;
 			node_eval.distanceEnd = -1;
-			node_eval.h = alpha;
 
 			if(node.isEndGame()){ //Finish or no moves
 				node_eval.h = node.heuristic();
@@ -158,33 +81,52 @@ function negascout(node, depth, α, β)
 				toSave = true;
 			} else {
 				vector<Move> moves = node.findMoves();
-				int b = beta;
-				for(unsigned int i = 0 ; i < moves.size() ; i++){
-					Node node2 = node.dup();
-					node2.doMove(moves[i]);
-					NodeEval node_eval_tmp = negascout(node2, depth-1, -b, -alpha);
-					node_eval_tmp.h = -node_eval_tmp.h;
+				if(node.turn == 1){ // MAX
+					node_eval.h = alpha;
+					for(unsigned int i = 0 ; i < moves.size() ; i++){
+						Node node2 = node.dup();
+						node2.doMove(moves[i]);
+						NodeEval node_eval_tmp = alphabeta(node2, depth-1, alpha, beta);
 
-					if(alpha < node_eval_tmp.h && node_eval_tmp.h < beta && i!=0){
-						node_eval_tmp = negascout(node2, depth-1, -beta, -alpha);
-						node_eval_tmp.h = -node_eval_tmp.h;
-					}
-//					alpha = max(alpha, moves[i].h);
-					if(alpha <= node_eval_tmp.h){
-						alpha = node_eval_tmp.h;
-						node_eval.h = node_eval_tmp.h;
-//						node_eval.depth = node_eval_tmp.depth + 1;
-						node_eval.distanceEnd = node_eval_tmp.distanceEnd;
-						if(node_eval.distanceEnd != -1)
-							node_eval.distanceEnd++;
-						toSave = true;
-					}
-					if (alpha >= beta){ // Beta cut-off
-						pruned = true;
-						break;
-					}
+						// α := max(α, alphabeta(child, depth-1, α, β, not(Player) ))
+						if(alpha <= node_eval_tmp.h){
+							alpha = node_eval_tmp.h;
+							node_eval.h = node_eval_tmp.h;
+//							node_eval.depth = node_eval_tmp.depth + 1;
+							node_eval.distanceEnd = node_eval_tmp.distanceEnd;
+							if(node_eval.distanceEnd != -1)
+								node_eval.distanceEnd++;
+							toSave = true;
+						}
+						if (alpha >= beta && config.Algorithm == ALGORITHM_ALPHABETA){ // Beta cut-off
+							pruned = true;
+							break;
+						}
 						//return node_eval;
-					b = alpha + 1;
+					}
+				} else { // MIN /**/
+					node_eval.h = beta;
+					for(unsigned int i = 0 ; i < moves.size() ; i++){
+						Node node2 = node.dup();
+						node2.doMove(moves[i]);
+						NodeEval node_eval_tmp = alphabeta(node2, depth-1, alpha, beta);
+
+						// β := min(β, alphabeta(child, depth-1, α, β, not(Player) ))
+						if(beta >= node_eval_tmp.h){
+							beta = node_eval_tmp.h;
+							node_eval.h = node_eval_tmp.h;
+//							node_eval.depth = node_eval_tmp.depth + 1;
+							node_eval.distanceEnd = node_eval_tmp.distanceEnd;
+							if(node_eval.distanceEnd != -1)
+								node_eval.distanceEnd++;
+							toSave = true;
+						}
+						if (alpha >= beta && config.Algorithm == ALGORITHM_ALPHABETA){ // Beta cut-off
+							pruned = true;
+							break;
+						}
+						//return node_eval;
+					}
 				}
 			}
 //node.print(depth, node_eval);
@@ -225,20 +167,27 @@ function negascout(node, depth, α, β)
 				Node node2 = node.dup();
 				node2.doMove(moves[i]);
 				NodeEval node_eval_tmp;
-				if(config.Algorithm == ALGORITHM_NEGASCOUT){
+//cout << "Move1: " << moves[i].x << ", "  << moves[i].y << ", " << moves[i].player << endl;
+				if(config.Algorithm == ALGORITHM_ALPHABETA){
 					pruned = false;
-					node_eval_tmp = negascout(node2, depth, LONG_MIN, LONG_MAX);
-				}else if(config.Algorithm == ALGORITHM_MINMAX)
-					node_eval_tmp = minmax(node2, depth);
-				node_eval_tmp.h = -node_eval_tmp.h;
+					node_eval_tmp = alphabeta(node2, depth, LONG_MIN, LONG_MAX);
+				}else if(config.Algorithm == ALGORITHM_MINMAX){
+					pruned = false;
+					node_eval_tmp = alphabeta(node2, depth, LONG_MIN, LONG_MAX);
+				}
 //node2.print(depth, node_eval_tmp);
-//cout << "Move: " << moves[i].x << ", "  << moves[i].y << ", "  << moves[i].h << ", " << moves[i].player << endl;
+//cout << "Move2: " << moves[i].x << ", "  << moves[i].y << ", " << moves[i].player << endl;
 				if(i==0){
 					node_eval = node_eval_tmp;
 					best_h = node_eval_tmp.h;
 					best_distance = node_eval_tmp.distanceEnd;
 					num = i;
-				} else if(node_eval_tmp.h > best_h){
+				} else if(node_eval_tmp.h > best_h && node.turn == 1){ // MAX
+					node_eval = node_eval_tmp;
+					best_h = node_eval_tmp.h;
+					best_distance = node_eval_tmp.distanceEnd;
+					num = i;
+				} else if(node_eval_tmp.h < best_h && node.turn != 1){ // MIN
 					node_eval = node_eval_tmp;
 					best_h = node_eval_tmp.h;
 					best_distance = node_eval_tmp.distanceEnd;
@@ -249,6 +198,7 @@ function negascout(node, depth, α, β)
 					best_distance = node_eval_tmp.distanceEnd;
 					num = i;
 				}
+
 				if(config.PersistenceUse && depth >= config.PersistenceMinDepthToSave){
 					bool reversed = false;
 					NodeEval node_eval_get;
@@ -289,6 +239,8 @@ function negascout(node, depth, α, β)
 					if(reversed)
 						node_eval.h = -node_eval.h;
 					persistence.set(key, node_eval.makeString());
+					if(reversed)
+						node_eval.h = -node_eval.h;
 				}
 			}
 //			cout << "num: " <<  num << endl;

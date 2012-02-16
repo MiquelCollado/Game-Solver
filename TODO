@@ -1,4 +1,4 @@
-Modificar GameSolver (Negascout y si es aplicable a Minimax)
+Modificar GameSolver (Alphabeta y si es aplicable a Minimax)
 	- Profundidad incremental empezando por el minimo que se graba hasta el maximo pedido
 	- Al generar los movimientos, leer la heuristica de DB o calcularla y ordenar.
 	- Añadir estadisticas de ahorro de calculo con accesos a DB

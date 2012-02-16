@@ -105,24 +105,49 @@ int FiveInARow_Node::heuristic(){
 int FiveInARow_Node::isEndGame(){
 	int ret = GAME_PLAYING;
 	int zero = 0;
-
-	if(board[0][0] != 0 && board[0][0] == board[1][1] && board[0][0] == board[2][2]){ // Diagonal
-		ret = board[0][0];
-	}else if(board[0][2] != 0 && board[0][2] == board[1][1] && board[0][2] == board[2][0]){ // Diagonal
-		ret = board[0][2];
-	}else{
-		for(int i = 0 ; i < BOARD_SIZE_X ; i++){
-			if(board[i][0] != 0 && board[i][0] == board[i][1] && board[i][0] == board[i][2]){ //Fila
-				ret = board[i][0];
-				break;
-			}
-			if(board[0][i] != 0 && board[0][i] == board[1][i] && board[0][i] == board[2][i]){ //Columna
-				ret = board[0][i];
-				break;
-			}
-			for(int j = 0 ; j < BOARD_SIZE_Y ; j++){ // Cuenta los 0's
-				if(board[i][j] == 0)
-					zero++;
+	int i, j, k;
+	int countH, countV, countD1, countD2;
+	for(i = 0 ; i < BOARD_SIZE_X ; i++){
+		for(j = 0 ; j < BOARD_SIZE_Y; j++){
+			countH = 1;
+			countV = 1;
+			countD1 = 1;
+			countD2 = 1;
+			if(board[i][j] != 0){
+				for(k = 1 ; k < 5 ; k++){
+					if(j+k < BOARD_SIZE_Y){
+						if(board[i][j] == board[i][j+k]){ //Fila
+							countH++;
+						} else {
+							break;
+						}
+					}
+					if(i+k < BOARD_SIZE_X){
+						if(board[i][j] == board[i+k][j]){ //Columna
+							countV++;
+						} else {
+							break;
+						}
+					}
+					if(i+k < BOARD_SIZE_X && j+k < BOARD_SIZE_Y){
+						if(board[i][j] == board[i+k][j+k]){  // Diagonal1
+							countD1++;
+						} else {
+							break;
+						}
+					}
+					if(i+k < BOARD_SIZE_X && j-k > 0){
+						if(board[i][j] == board[i+k][j-k]){  // Diagonal2
+							countD2++;
+						} else {
+							break;
+						}
+					}
+				}
+				if(countH >= 5 || countV >= 5 || countD1 >= 5 || countD2 >= 5)
+					ret = board[i][j];
+			} else {
+				zero++;
 			}
 		}
 	}
