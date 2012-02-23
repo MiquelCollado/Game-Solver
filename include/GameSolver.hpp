@@ -13,7 +13,7 @@
 
 #include "Node.hpp"
 #include "NodeEval.hpp"
-#include "Move.hpp"
+//#include "Move.hpp"
 #include "Config.hpp"
 #include "Persistence.hpp"
 
@@ -21,6 +21,9 @@
 #define GAME_WIN_FIRST 1
 #define GAME_WIN_SECOND 2
 #define GAME_DRAW 3
+
+#define MAX 1
+#define MIN 2
 
 using namespace std;
 
@@ -49,6 +52,74 @@ function alphabeta(node, depth, α, β, Player)
 (* Initial call *)
 alphabeta(origin, depth, -infinity, +infinity, MaxPlayer)
 */
+		static bool sortMax (Move i,Move j) {
+			bool ret;
+			if(i.data.h > j.data.h){
+				ret = true;
+			} else if(i.data.h == j.data.h && i.data.distanceEnd < j.data.distanceEnd && i.data.distanceEnd != -1){
+				ret = true;
+			} else {
+				ret = false;
+			}
+			return ret;
+		}
+		static bool sortMin (Move i,Move j) {
+			bool ret;
+			if(i.data.h < j.data.h){
+				ret = true;
+			} else if(i.data.h == j.data.h && i.data.distanceEnd > j.data.distanceEnd && j.data.distanceEnd != -1){
+				ret = true;
+			} else {
+				ret = false;
+			}
+			return ret;
+		}
+
+		void sortMoves(Node & node, vector<Move> & moves, int order){
+			typename vector<Move>::iterator it;
+			typename vector<Move>::iterator it2, it_old;
+			bool reversed = false;
+			string key;
+
+			if(moves.size() > 0){
+				for(unsigned int i = 0 ; i < moves.size() ; i++){
+					Node node2 = node.dup();
+					node2.doMove(moves[i]);
+					moves[i].key = node2.generateKey(reversed);
+					if(config.PersistenceUse){
+						moves[i].data.parseString(persistence.get(moves[i].key));
+						if(moves[i].data.depth != 0){
+							if(reversed)
+								moves[i].data.h = -moves[i].data.h;
+						} else {
+							moves[i].data.depth = 0;
+							moves[i].data.distanceEnd = -1;
+							moves[i].data.h = node2.heuristic();;
+						}
+					} else {
+						moves[i].data.h = node2.heuristic();;
+					}
+				}
+				if(order == MAX)
+					sort(moves.begin(), moves.end(), GameSolver::sortMax);
+				else
+					sort(moves.begin(), moves.end(), GameSolver::sortMin);
+
+				it = moves.begin();
+				it_old= it;
+				if(it != moves.end())
+					++it;
+				while(it != moves.end()){
+					if((*it_old).key.compare((*it).key) == 0)
+						it = moves.erase(it);
+					else{
+						it_old = it;
+						++it;
+					}
+				}
+			}
+		}
+
 		NodeEval alphabeta(Node & node, int depth, int alpha, int beta){
 			NodeEval node_eval;
 			bool toSave = false;
@@ -81,6 +152,9 @@ alphabeta(origin, depth, -infinity, +infinity, MaxPlayer)
 				toSave = true;
 			} else {
 				vector<Move> moves = node.findMoves();
+				if(config.SortMoves){
+					sortMoves(node, moves, node.turn);
+				}
 				if(node.turn == 1){ // MAX
 					node_eval.h = alpha;
 					for(unsigned int i = 0 ; i < moves.size() ; i++){
@@ -160,9 +234,16 @@ alphabeta(origin, depth, -infinity, +infinity, MaxPlayer)
 			int best_h = 0;
 			int best_distance = -1;
 			int num = -1;
-			vector<Move> moves = node.findMoves();
 			NodeEval node_eval;
 
+			vector<Move> moves = node.findMoves();
+			if(config.SortMoves){
+				sortMoves(node, moves, node.turn);
+			}
+/*			for(unsigned int i = 0 ; i < moves.size() ; i++){
+				cout << "Move: " << moves[i].x << ", "  << moves[i].y << ", " << moves[i].data.h << ", " << moves[i].data.distanceEnd << ", " << moves[i].data.depth << endl;
+			}
+			exit(0);*/
 			for(unsigned int i = 0 ; i < moves.size() ; i++){
 				Node node2 = node.dup();
 				node2.doMove(moves[i]);

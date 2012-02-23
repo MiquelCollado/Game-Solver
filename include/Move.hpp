@@ -7,6 +7,7 @@ class Move {
 	public:
 		NodeEval data;
 		int player;
+		string key;
 };
 
 #endif /* H_MOVE */

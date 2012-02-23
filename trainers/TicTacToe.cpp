@@ -15,6 +15,7 @@ int main(){
 	cfg.PersistenceName = "DB_TicTacToe";
 	cfg.TimeoutUse = false;
 	cfg.TimeoutSeconds = 0;
+	cfg.SortMoves = false;
 
 	GameSolver<TicTacToe_Node, TicTacToe_Move, LevelDBPersistence> gs(cfg);
 	TicTacToe_Node board;

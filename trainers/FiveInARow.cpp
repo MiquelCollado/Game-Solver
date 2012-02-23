@@ -9,13 +9,14 @@
 
 int main(){
 	Config cfg;
-	cfg.Algorithm = ALGORITHM_MINMAX;
-//	cfg.Algorithm = ALGORITHM_ALPHABETA;
+//	cfg.Algorithm = ALGORITHM_MINMAX;
+	cfg.Algorithm = ALGORITHM_ALPHABETA;
 	cfg.PersistenceUse = true;
 	cfg.PersistenceMinDepthToSave = 3;
 	cfg.PersistenceName = "DB_FiveInARow";
 	cfg.TimeoutUse = false;
 	cfg.TimeoutSeconds = 0;
+	cfg.SortMoves = true;
 
 	GameSolver<FiveInARow_Node, FiveInARow_Move, LevelDBPersistence> gs(cfg);
 	FiveInARow_Node board;

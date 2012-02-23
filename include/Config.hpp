@@ -16,6 +16,7 @@ class Config {
 		string	PersistenceName;
 		bool	TimeoutUse;
 		int		TimeoutSeconds;
+		bool	SortMoves;
 
 		Config(){
 			Algorithm = ALGORITHM_ALPHABETA;
@@ -24,6 +25,7 @@ class Config {
 			PersistenceName = "";
 			TimeoutUse = false;
 			TimeoutSeconds = 0;
+			SortMoves = false;
 		}
 };
 
